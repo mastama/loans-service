@@ -71,4 +71,38 @@ public class LoansController {
                 .status(HttpStatus.OK)
                 .body(new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200, loansDto));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDto> updateLoan(@Valid @RequestBody LoansDto loansDto) {
+        log.info("Incoming Updating loan: {}", loansDto);
+        boolean isUpdated = iLoansService.updateLoan(loansDto);
+        if (isUpdated) {
+            log.info("Outgoing updated loan: {}", loansDto);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200, loansDto));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE, loansDto));
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDto> deleteLoan(@RequestParam
+                                                  @Pattern(regexp = "^\\d{11,13}$", message = "MobileNumber must be numbers only and should be between 11 to 13 digits")
+                                                  String mobileNumber) {
+        log.info("Incoming Deleting loan: {}", mobileNumber);
+        boolean isDeleted = iLoansService.deleteLoan(mobileNumber);
+        if (isDeleted) {
+            log.info("Outgoing deleted loan: {}", mobileNumber);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200, null));
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE, null));
+        }
+    }
 }
