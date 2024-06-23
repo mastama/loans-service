@@ -1,11 +1,15 @@
 package com.mastama.loans.controller;
 
 import com.mastama.loans.constants.LoansConstants;
+import com.mastama.loans.dto.ErrorResponseDto;
 import com.mastama.loans.dto.LoansDto;
 import com.mastama.loans.dto.ResponseDto;
 import com.mastama.loans.service.ILoansService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
@@ -72,6 +76,27 @@ public class LoansController {
                 .body(new ResponseDto(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200, loansDto));
     }
 
+    @Operation(
+            summary = "Update Loan REST API",
+            description = "REST API to update Loan details based on a loan number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @PutMapping("/update")
     public ResponseEntity<ResponseDto> updateLoan(@Valid @RequestBody LoansDto loansDto) {
         log.info("Incoming Updating loan: {}", loansDto);
@@ -88,6 +113,28 @@ public class LoansController {
         }
     }
 
+
+    @Operation(
+            summary = "Delete loans details REST API",
+            description = "REST API to delete loan details based on a mobile number"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
     @DeleteMapping("/delete")
     public ResponseEntity<ResponseDto> deleteLoan(@RequestParam
                                                   @Pattern(regexp = "^\\d{11,13}$", message = "MobileNumber must be numbers only and should be between 11 to 13 digits")
